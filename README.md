@@ -10,5 +10,6 @@ Tiny CMS in single file plain html
 - Keep `<mark>`
 - Small size
 - Configurable
-- mobile friendly
+- Mobile friendly
+- Data stored in EOF
 - [Demo](https://jlongyam.github.io/html-cms/display.html)

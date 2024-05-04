@@ -19,7 +19,7 @@
       margin: 0;
     }
     #menu_bar {
-      border-bottom: 2px solid gray;
+      border: 2px solid gray;
       background-color: silver;
       padding: 5px;
       display: flex;
@@ -93,6 +93,7 @@
 </head>
 <body>
 <div id=menu_bar>
+  <button class=menu_button onclick=html5()>#</button>
   <button class=menu_button onclick=edit()>Edit</button>
   <button class=menu_button onclick=preview()>Preview</button>
   <button class=menu_button onclick=mark()>Mark</button>
@@ -116,20 +117,26 @@ function downloadString(text, fileType, fileName) {
   document.body.removeChild(a);
   setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
 }
+const html5_str = ( title='Title', head_str='', body_str='' )=> `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,shrink-to-fit=no">
+  <title>${title}</title>
+  ${head_str}
+</head>
+<body>
+  ${body_str}
+</body>
+</html>`
+function html5() {
+  code_editor.textContent = html5_str( document.title, '<style></style>', '<script><\/script>')
+}
 function update() {
   let last_script = document.scripts[document.scripts.length-1]
   last_script.innerHTML = 'content(`' + code_editor.innerHTML + '`)\n'
   code_editor.innerHTML = 'PRE'
-  let str = '<!doctype html>\n'
-  str += '<html lang="en">\n'
-  str += '<head>\n'
-  str += '  <meta charset="UTF-8">\n'
-  str += '  <meta name="viewport" content="width=device-width,initial-scale=1.0,shrink-to-fit=no">\n'
-  str += '  <title>Display</title>\n'
-  str += '  '+ document.querySelector('#style').outerHTML + '\n'
-  str += '</head>\n'
-  str += document.body.outerHTML + '\n'
-  str += '</html>'
+  str = html5_str( 'Display', document.querySelector('#style').outerHTML + '\n', document.body.innerHTML )
   let file_name = location.href.split('/').pop()
   downloadString(str,'text/html',file_name)
 }
