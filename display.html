@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-mode=""><!-- snippet | website -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -10,7 +10,7 @@
       --border: 2px solid gray;
       --base-height: 48px;
       --base-padding: 5px;
-      --padding: calc(var(--base-padding) * 2);
+      --padding: calc(var(--base-padding) * 5);
       --outline-color: orange;
       }
     * { box-sizing: border-box; }
@@ -115,7 +115,7 @@
     }
   </style>
 </head>
-<body>
+<body class="hide">
 <div id="menu_bar">
   <div>
     <button id="button_insert" class="menu_button" onclick="html5()" disabled>#</button>
@@ -265,10 +265,42 @@ function preview() {
     }
   }
 }
+function viewMode( mode ) {
+  const mode_snippet = ()=> {
+    button_insert.classList.add('hide')
+    button_edit.classList.add('hide')
+    button_mark.classList.add('hide')
+    button_update.classList.add('hide')
+    document.title = location.href.split('\/').pop()
+    document.body.classList.remove('hide')
+  }
+  const mode_site = ()=> {
+    preview()
+    menu_bar.remove()
+    code_layout.style.height = '100%'
+    code_layout.style.border = '0'
+    document.title = location.href.split('\/').pop()
+    document.body.classList.remove('hide')
+  }
+  const mode_admin = ()=> {
+    document.body.classList.remove('hide')
+  }
+  switch( mode ) {
+    case 'snippet': mode_snippet(); break;
+    case 'website': mode_site(); break;
+    default : mode_admin(); break;
+  }
+}
 function content(str) {
   code_editor.innerHTML = str.trim()
   code_mirror.value = code_editor.textContent
   code_marker.value = code_editor.innerHTML
+  let data_mode = document.querySelector('html').dataset.mode
+  if(location.search.includes('?mode') || location.search.includes('?admin') ) {
+    data_mode = location.search.split('=')[1]
+  }
+  viewMode(data_mode)
+  document.body.classList.remove('hide')
 }
 </script>
 <script>content(`&lt;!doctype html&gt;
