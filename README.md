@@ -8,7 +8,7 @@ Tiny CMS in single file plain html
 - Code preview
 - File snippet
 - Keep `<mark>`
-- Small size
+- Small size, `8 KB`
 - Configurable
 - Mobile friendly
 - Data stored in EOF
@@ -16,10 +16,12 @@ Tiny CMS in single file plain html
 
 ## Roadmap
 
-- Fix tab on desktop
-- Add marker button for mobile
-- Add mode live|snippet
-- Use sessionStorage
-- Split content to tabs
-- Additional menu space
-- Minify
+- [x] Fix tab on desktop
+- [ ] Add marker button for mobile
+- [ ] Add mode `live` and mode `snippet`
+- [ ] Use sessionStorage
+- [ ] Split content to tabs
+- [ ] Additional menu space
+- [ ] Minify
+
+[MIT](LICENSE) License

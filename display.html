@@ -8,8 +8,10 @@
     :root {
       --font: 1.1rem/1.5 monospace;
       --border: 2px solid gray;
-      --padding: 10px;
-      --outline-color: orange; 
+      --base-height: 48px;
+      --base-padding: 5px;
+      --padding: calc(var(--base-padding) * 2);
+      --outline-color: orange;
       }
     * { box-sizing: border-box; }
     ::selection {
@@ -23,6 +25,8 @@
     body {
       height: 100%;
       margin: 0;
+      -moz-tab-size: 2;
+      tab-size: 2;
       }
     mark {
       padding: 3px 0;
@@ -31,16 +35,17 @@
       border: var(--border);
       border-bottom: 0;
       background-color: silver;
-      padding: 5px;
+      padding: var(--base-padding);
       display: flex;
       flex-wrap: nowrap;
       justify-content: space-between;
-      height: 46px;
+      height: var(--base-height);
       }
     .menu_button {
       font-family: monospace;
       font-size: 1.1rem;
-      padding: 5px;
+      padding: var(--base-padding);
+      z-index: 9;
       }
       .menu_button:focus {
         outline: 2px solid var(--outline-color);
@@ -51,7 +56,7 @@
       position: relative;
       top: 0;
       bottom: 0;
-      height: calc(100% - 46px);
+      height: calc(100% - var(--base-height));
       }
     #code_editor {
       outline: 0;
@@ -65,7 +70,7 @@
       bottom: 0;
       left: 0;
       border: 0;
-      color: gray;
+      color: #607d8b;
       }
     #code_preview {
       border: 0;
@@ -92,7 +97,6 @@
       bottom: 0;
       left: 0;
       border: 0;
-      caret-color: #00bcd4;
       }
       #code_marker:focus,
       #code_mirror:focus {
@@ -101,12 +105,20 @@
     .hide {
       display: none;
       }
+    /* response DESKTOP */
+    @media screen and (min-width: 768px) {
+      :root {
+        --font: 1rem/1.75 Consolas, 'Ubuntu mono', monospace;
+        --base-padding: 3px;
+        --base-height: 40px;
+      }
+    }
   </style>
 </head>
 <body>
 <div id="menu_bar">
   <div>
-    <button id="button_insert" class="menu_button" onclick="html5()" disabled="">#</button>
+    <button id="button_insert" class="menu_button" onclick="html5()" disabled>#</button>
     <button id="button_edit" class="menu_button" onclick="edit()">Edit</button>
     <button id="button_mark" class="menu_button" onclick="mark()">Mark</button>
   </div>
@@ -117,11 +129,24 @@
 </div>
 <div id="code_layout">
   <pre class="" id="code_editor">Content Updated ...</pre>
-  <textarea class="hide" id="code_mirror" wrap="off"></textarea>
+  <textarea class="hide" id="code_mirror" wrap="off" onkeydown=handleTab(this)></textarea>
   <iframe class="hide" id="code_preview"></iframe>
-  <textarea class="hide" id="code_marker" wrap="off"></textarea>
+  <textarea class="hide" id="code_marker" wrap="off" onkeydown=handleTab(this)></textarea>
 </div>
 <script>
+function handleTab(el) {
+  if(event.keyCode===9) {
+    event.preventDefault()
+    let
+      v=el.value,
+      s=el.selectionStart,
+      e=el.selectionEnd
+    ;
+    el.value=v.substring(0, s)+'\t'+v.substring(e)
+    el.selectionStart=el.selectionEnd=s+1
+    return false
+  }
+}
 function downloadString(text, fileType, fileName) {
   let blob = new Blob([text], { type: fileType })
   let a = document.createElement('a');
