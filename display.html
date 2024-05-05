@@ -1,54 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Display</title>
-  <style id=style>
+  <style id="style">
     :root {
-      --font: 1.1rem/1.5 monospace;;
+      --font: 1.1rem/1.5 monospace;
+      --border: 2px solid gray;
       --padding: 10px;
-    }
+      --outline-color: orange; 
+      }
     * { box-sizing: border-box; }
+    ::selection {
+      background-color: rgba(0,188,212,0.30);
+      color: black;
+      }
     html {
       height: 100%;
       font-size: 16px;
-    }
+      }
     body {
       height: 100%;
       margin: 0;
-    }
+      }
+    mark {
+      padding: 3px 0;
+      }
     #menu_bar {
-      border: 2px solid gray;
+      border: var(--border);
+      border-bottom: 0;
       background-color: silver;
       padding: 5px;
       display: flex;
       flex-wrap: nowrap;
-      align-content: center;
       justify-content: space-between;
       height: 46px;
-    }
+      }
     .menu_button {
       font-family: monospace;
       font-size: 1.1rem;
       padding: 5px;
-    }
-    .menu_button:focus {
-      outline: 2px solid orange;
-      outline-offset: 2px;
-    }
+      }
+      .menu_button:focus {
+        outline: 2px solid var(--outline-color);
+        outline-offset: 2px;
+        }
     #code_layout {
+      border: var(--border);
       position: relative;
       top: 0;
       bottom: 0;
       height: calc(100% - 46px);
-    }
+      }
     #code_editor {
       outline: 0;
       font: var(--font);
       padding: var(--padding);
       margin: 0;
-      border: 1px solid orange;
       overflow: auto;
       position: absolute;
       top: 0;
@@ -56,9 +65,10 @@
       bottom: 0;
       left: 0;
       border: 0;
-    }
-    #code_previewer {
-      border: 0
+      color: gray;
+      }
+    #code_preview {
+      border: 0;
       margin: 0;
       width: 100%;
       position: absolute;
@@ -67,8 +77,9 @@
       bottom: 0;
       left: 0;
       border: 0;
-    }
-    #code_marker {
+      }
+    #code_marker,
+    #code_mirror {
       border: 0;
       margin: 0;
       font: var(--font);
@@ -83,26 +94,36 @@
       bottom: 0;
       left: 0;
       border: 0;
-    }
+      caret-color: #00bcd4;
+      }
+      #code_marker:focus,
+      #code_mirror:focus {
+        outline: 2px solid var(--outline-color);
+        }
     .hide {
-      visibility: hidden;
-      height: 0;
-      width: 0;
-    }
+      display: none;
+      }
   </style>
+
 </head>
 <body>
-<div id=menu_bar>
-  <button class=menu_button onclick=html5()>#</button>
-  <button class=menu_button onclick=edit()>Edit</button>
-  <button class=menu_button onclick=preview()>Preview</button>
-  <button class=menu_button onclick=mark()>Mark</button>
-  <button class=menu_button onclick=update()>Update</button>
+  
+<div id="menu_bar">
+  <div>
+    <button id="button_insert" class="menu_button" onclick="html5()" disabled="">#</button>
+    <button id="button_edit" class="menu_button" onclick="edit()">Edit</button>
+    <button id="button_mark" class="menu_button" onclick="mark()">Mark</button>
+  </div>
+  <button id="button_preview" class="menu_button" onclick="preview()">Preview</button>
+  <div>
+    <button id="button_update" class="menu_button" onclick="update()">Update</button>
+  </div>
 </div>
-<div id=code_layout>
-  <pre id=code_editor contenteditable spellcheck=false>PRE</pre>
-  <iframe class=hide id=code_previewer></iframe>
-  <textarea class='hide' id=code_marker wrap=off onkeyup=syncTextarea()>TEXTAREA</textarea>
+<div id="code_layout">
+  <pre class="" id="code_editor">Content Updated ...</pre>
+  <textarea class="hide" id="code_mirror" wrap="off"></textarea>
+  <iframe class="hide" id="code_preview"></iframe>
+  <textarea class="hide" id="code_marker" wrap="off"></textarea>
 </div>
 <script>
 function downloadString(text, fileType, fileName) {
@@ -121,7 +142,7 @@ const html5_str = ( title='Title', head_str='', body_str='' )=> `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>${title}</title>
   ${head_str}
 </head>
@@ -130,54 +151,126 @@ const html5_str = ( title='Title', head_str='', body_str='' )=> `<!doctype html>
 </body>
 </html>`
 function html5() {
-  code_editor.textContent = html5_str( document.title, '<style></style>', '<script><\/script>')
+  code_editor.textContent = code_mirror.value = html5_str( document.title, '<style></style>', '<script><\/script>')
 }
 function update() {
   let last_script = document.scripts[document.scripts.length-1]
   last_script.innerHTML = 'content(`' + code_editor.innerHTML + '`)\n'
-  code_editor.innerHTML = 'PRE'
+  code_editor.innerHTML = 'Content Updated ...'
   str = html5_str( 'Display', document.querySelector('#style').outerHTML + '\n', document.body.innerHTML )
   let file_name = location.href.split('/').pop()
   downloadString(str,'text/html',file_name)
 }
 function edit() {
-  code_editor.className = ''
-  code_previewer.className = 'hide'
-  code_marker.className = 'hide'
-}
-function preview() {
-  code_previewer.className = ''
-  code_editor.className = 'hide'
-  code_marker.className = 'hide'
-  let ifr_doc = code_previewer.contentWindow.document
-  ifr_doc.open()
-  ifr_doc.write(code_editor.textContent)
-  iframe.close()
+  code_preview.className = code_marker.className = 'hide'
+  code_mirror.focus()
+  button_preview.removeAttribute('disabled')
+  if(button_edit.textContent === 'Edit') {
+    code_mirror.className = ''
+    code_editor.className =  'hide'
+    button_edit.textContent = 'Save'
+    button_insert.removeAttribute('disabled')
+    button_mark.setAttribute('disabled','')
+    button_update.setAttribute('disabled','')
+    code_mirror.value = code_editor.textContent
+    return
+  }
+  if(button_edit.textContent === 'Save') {
+    code_mirror.className = 'hide'
+    code_editor.className =  ''
+    button_edit.textContent = 'Edit'
+    button_insert.setAttribute('disabled','')
+    button_mark.removeAttribute('disabled')
+    button_update.removeAttribute('disabled')
+    code_editor.textContent = code_mirror.value
+  }
 }
 function mark() {
-  code_marker.className = ''
-  code_editor.className = 'hide'
-  code_previewer.className = 'hide'
-  // handle autogenerated `div`
-  let sort_str = code_editor.innerHTML
-  .replace('<div>','')
-  .replaceAll('<div>','\n')
-  .replaceAll('</div>','')
-  .replaceAll('<br>','\n')
-  code_marker.value = sort_str
+  code_mirror.className = code_preview.className = 'hide'
+  if( button_mark.textContent === 'Mark' ) {
+    code_marker.className = ''
+    code_editor.className = 'hide'
+    button_preview.setAttribute('disabled','')
+    button_update.setAttribute('disabled','')
+    button_edit.setAttribute('disabled','')
+    button_mark.textContent = 'Save'
+    code_marker.value = code_editor.innerHTML
+    return
+  }
+  if( button_mark.textContent === 'Save' ) {
+    code_marker.className = 'hide'
+    code_editor.className = ''
+    button_preview.removeAttribute('disabled')
+    button_update.removeAttribute('disabled')
+    button_edit.removeAttribute('disabled')
+    button_mark.textContent = 'Mark'
+    code_editor.innerHTML = code_marker.value
+  }
 }
-function syncTextarea() {
-  code_editor.innerHTML = code_marker.value
+function preview() {
+  if( button_preview.textContent === 'Preview') {
+    code_mirror.className = code_marker.className = 'hide'
+    button_preview.textContent = 'Go Back'
+    code_preview.className = ''
+    code_editor.className = 'hide'
+    button_edit.setAttribute('disabled','')
+    button_insert.setAttribute('disabled','')
+    button_mark.setAttribute('disabled','')
+    if( button_edit.textContent === 'Edit' ) {
+      code_editor.innerHTML = code_marker.value
+    }
+    else { // 'Save'
+      code_editor.textContent = code_mirror.value
+    }
+    let ifr_doc = code_preview.contentWindow.document
+    ifr_doc.open()
+    ifr_doc.write(code_mirror.value)
+    ifr_doc.close()
+    return
+  }
+  if( button_preview.textContent === 'Go Back') {
+    button_preview.textContent = 'Preview'
+    code_preview.className = 'hide'
+    code_mirror.className = 'hide'
+    code_editor.className = ''
+    button_edit.removeAttribute('disabled')
+    button_mark.removeAttribute('disabled')
+    if( button_edit.textContent === 'Save' ) {
+      button_mark.setAttribute('disabled','')
+      code_editor.textContent = code_mirror.value 
+      code_editor.className = 'hide'
+      code_mirror.className = ''
+      code_mirror.focus()
+    }
+  }
 }
 function content(str) {
-  code_editor.innerHTML = str
+  code_editor.innerHTML = str.trim()
+  code_mirror.value = code_editor.textContent
+  code_marker.value = code_editor.innerHTML
 }
 </script>
-<script>
-content(`
-&lt;h1&gt;Hello world&lt;/h1&gt;
-&lt;p&gt;<mark>Paragraph</mark>&lt;/p&gt;
-`)
+<script>content(`&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+  &lt;title&gt;Display&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      <b>font: 1.1rem/1.5 Consolas, monospace;</b>
+      margin: 5%;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;script&gt;
+    <mark>document.write</mark>('&lt;h1&gt;Hello World&lt;/h1&gt;')
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;`)
 </script>
+
+
 </body>
 </html>

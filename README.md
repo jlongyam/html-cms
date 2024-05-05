@@ -13,3 +13,13 @@ Tiny CMS in single file plain html
 - Mobile friendly
 - Data stored in EOF
 - [Demo](https://jlongyam.github.io/html-cms/display.html)
+
+## Roadmap
+
+- Fix tab on desktop
+- Add marker button for mobile
+- Add mode live|snippet
+- Use sessionStorage
+- Split content to tabs
+- Additional menu space
+- Minify
