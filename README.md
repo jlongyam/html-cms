@@ -20,9 +20,7 @@ Tiny CMS in single file plain html
 
 Switch page view by added `data-mode`
 
-Value: `snippet`|`website`
-
-Default is **empty**
+value: `snippet` or `website`, default is **empty**
 
 Example:
 
@@ -42,7 +40,7 @@ or
 /display.html?admin=snippet
 ```
 
-If has permanent `data-set` value, but want to go back to
+If `data-set` was present in `file.html` then want to go back to
 
 admin mode, it can be access by `?admin`
 
