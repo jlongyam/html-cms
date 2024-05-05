@@ -72,10 +72,8 @@
       margin: 0;
       width: 100%;
       position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      width: 100%;
+      height: 100%;
       border: 0;
       }
     #code_marker,
@@ -104,10 +102,8 @@
       display: none;
       }
   </style>
-
 </head>
 <body>
-  
 <div id="menu_bar">
   <div>
     <button id="button_insert" class="menu_button" onclick="html5()" disabled="">#</button>
@@ -157,7 +153,7 @@ function update() {
   let last_script = document.scripts[document.scripts.length-1]
   last_script.innerHTML = 'content(`' + code_editor.innerHTML + '`)\n'
   code_editor.innerHTML = 'Content Updated ...'
-  str = html5_str( 'Display', document.querySelector('#style').outerHTML + '\n', document.body.innerHTML )
+  str = html5_str( 'Display', document.querySelector('#style').outerHTML, document.body.innerHTML )
   let file_name = location.href.split('/').pop()
   downloadString(str,'text/html',file_name)
 }
@@ -254,23 +250,15 @@ function content(str) {
 &lt;html lang="en"&gt;
 &lt;head&gt;
   &lt;meta charset="UTF-8"&gt;
-  &lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
-  &lt;title&gt;Display&lt;/title&gt;
+  &lt;title&gt;<u>Display</u>&lt;/title&gt;
   &lt;style&gt;
-    body {
-      <b>font: 1.1rem/1.5 Consolas, monospace;</b>
-      margin: 5%;
-    }
+    body { <b>font: 1.1rem/1.5 Consolas, monospace;</b> }
   &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
-  &lt;script&gt;
-    <mark>document.write</mark>('&lt;h1&gt;Hello World&lt;/h1&gt;')
-  &lt;/script&gt;
+  <mark>&lt;h1&gt;Hello World&lt;/h1&gt;</mark>
 &lt;/body&gt;
 &lt;/html&gt;`)
 </script>
-
-
 </body>
 </html>
