@@ -82,7 +82,7 @@
       border: 0;
       }
     #code_marker,
-    #code_mirror {
+    #code_proxy {
       border: 0;
       margin: 0;
       font: var(--font);
@@ -99,7 +99,7 @@
       border: 0;
       }
       #code_marker:focus,
-      #code_mirror:focus {
+      #code_proxy:focus {
         outline: 2px solid var(--outline-color);
         }
     .hide {
@@ -118,7 +118,7 @@
 <body class="hide">
 <div id="menu_bar">
   <div>
-    <button id="button_insert" class="menu_button" onclick="html5()" disabled>#</button>
+    <button id="button_insert" class="menu_button" onclick="insert()" disabled>#</button>
     <button id="button_edit" class="menu_button" onclick="edit()">Edit</button>
     <button id="button_mark" class="menu_button" onclick="mark()">Mark</button>
   </div>
@@ -129,10 +129,29 @@
 </div>
 <div id="code_layout">
   <pre class="" id="code_editor">Content Updated ...</pre>
-  <textarea class="hide" id="code_mirror" wrap="off" onkeydown=handleTab(this)></textarea>
+  <textarea class="hide" id="code_proxy" wrap="off" onkeydown=handleTab(this) spellcheck="false"></textarea>
   <iframe class="hide" id="code_preview"></iframe>
-  <textarea class="hide" id="code_marker" wrap="off" onkeydown=handleTab(this)></textarea>
+  <textarea class="hide" id="code_marker" wrap="off" onkeydown=handleTab(this) spellcheck="false"></textarea>
 </div>
+<!--
+  session map by event:
+   1 menu_bar > button
+     1.1 insert -> insert()               <=> code_proxy.value
+     1.2 edit|save -> edit()              <=> code_editor.textContent
+     1.3 mark|save -> mark()              <=> code_editor.innerHTML 
+     1.4 preview|go back -> preview()     <=> code_preview -> ifr_doc
+   2 code_layout
+     2.1 code_editor                      <=>
+         2.1.1 textContent                <=> edit()
+         2.1.2 innerHTML                  <=> mark()
+     2.2 code_proxy -> value              <=> edit()
+     2.2 code_marker -> value             <=> mark()
+     2.3 code_preview -> ifr_doc          <=> preview()
+   
+  session map by content:
+   1 code_editor.textContent              <=> code_proxy.value
+   2 code_editor.innerHTML                <=> code_marker.value
+-->
 <script>
 function handleTab(el) {
   if(event.keyCode===9) {
@@ -171,8 +190,8 @@ const html5_str = ( title='Title', head_str='', body_str='' )=> `<!doctype html>
   ${body_str}
 </body>
 </html>`
-function html5() {
-  code_editor.textContent = code_mirror.value = html5_str( document.title, '<style></style>', '<script><\/script>')
+function insert() {
+  code_editor.textContent = code_proxy.value = html5_str( document.title, '<style></style>', '<div>TODO</div>\n\t<script><\/script>')
 }
 function update() {
   let last_script = document.scripts[document.scripts.length-1]
@@ -184,30 +203,32 @@ function update() {
 }
 function edit() {
   code_preview.className = code_marker.className = 'hide'
-  code_mirror.focus()
+  code_proxy.focus()
   button_preview.removeAttribute('disabled')
   if(button_edit.textContent === 'Edit') {
-    code_mirror.className = ''
+    code_proxy.className = ''
     code_editor.className =  'hide'
     button_edit.textContent = 'Save'
     button_insert.removeAttribute('disabled')
     button_mark.setAttribute('disabled','')
     button_update.setAttribute('disabled','')
-    code_mirror.value = code_editor.textContent
+    code_proxy.value = code_editor.textContent
+    code_proxy.focus()
     return
   }
   if(button_edit.textContent === 'Save') {
-    code_mirror.className = 'hide'
+    code_proxy.className = 'hide'
     code_editor.className =  ''
     button_edit.textContent = 'Edit'
     button_insert.setAttribute('disabled','')
     button_mark.removeAttribute('disabled')
     button_update.removeAttribute('disabled')
-    code_editor.textContent = code_mirror.value
+    code_marker.value = code_proxy.value
+    code_editor.textContent = code_proxy.value
   }
 }
 function mark() {
-  code_mirror.className = code_preview.className = 'hide'
+  code_proxy.className = code_preview.className = 'hide'
   if( button_mark.textContent === 'Mark' ) {
     code_marker.className = ''
     code_editor.className = 'hide'
@@ -216,10 +237,12 @@ function mark() {
     button_edit.setAttribute('disabled','')
     button_mark.textContent = 'Save'
     code_marker.value = code_editor.innerHTML
+    code_marker.focus()
     return
   }
   if( button_mark.textContent === 'Save' ) {
     code_marker.className = 'hide'
+    code_preview.className = 'hide'
     code_editor.className = ''
     button_preview.removeAttribute('disabled')
     button_update.removeAttribute('disabled')
@@ -230,38 +253,33 @@ function mark() {
 }
 function preview() {
   if( button_preview.textContent === 'Preview') {
-    code_mirror.className = code_marker.className = 'hide'
     button_preview.textContent = 'Go Back'
+    code_proxy.className = code_marker.className = 'hide'
     code_preview.className = ''
     code_editor.className = 'hide'
     button_edit.setAttribute('disabled','')
     button_insert.setAttribute('disabled','')
     button_mark.setAttribute('disabled','')
-    if( button_edit.textContent === 'Edit' ) {
-      code_editor.innerHTML = code_marker.value
-    }
-    else { // 'Save'
-      code_editor.textContent = code_mirror.value
-    }
     let ifr_doc = code_preview.contentWindow.document
     ifr_doc.open()
-    ifr_doc.write(code_mirror.value)
+    ifr_doc.write(code_proxy.value)
     ifr_doc.close()
     return
   }
   if( button_preview.textContent === 'Go Back') {
     button_preview.textContent = 'Preview'
     code_preview.className = 'hide'
-    code_mirror.className = 'hide'
-    code_editor.className = ''
     button_edit.removeAttribute('disabled')
-    button_mark.removeAttribute('disabled')
     if( button_edit.textContent === 'Save' ) {
       button_mark.setAttribute('disabled','')
-      code_editor.textContent = code_mirror.value 
-      code_editor.className = 'hide'
-      code_mirror.className = ''
-      code_mirror.focus()
+      button_insert.removeAttribute('disabled')
+      code_proxy.className = ''
+      code_proxy.focus()
+    }
+    if( button_edit.textContent === 'Edit' ) {
+      button_mark.removeAttribute('disabled')
+      code_proxy.className = 'hide'
+      code_editor.className = ''
     }
   }
 }
@@ -293,7 +311,7 @@ function viewMode( mode ) {
 }
 function content(str) {
   code_editor.innerHTML = str.trim()
-  code_mirror.value = code_editor.textContent
+  code_proxy.value = code_editor.textContent
   code_marker.value = code_editor.innerHTML
   let data_mode = document.querySelector('html').dataset.mode
   if(location.search.includes('?mode') || location.search.includes('?admin') ) {
