@@ -57,7 +57,7 @@ Demo:
 - [ ] Use sessionStorage
 - [ ] Split content to tabs
 - [ ] Additional menu space
-- [ ] Minify
+- [x]] Minify
 - [x] Responsive
 
 [MIT](LICENSE) License
