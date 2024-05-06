@@ -12,7 +12,7 @@ Tiny CMS in single file plain html
 - Configurable
 - Mobile friendly
 - Data stored in EOF
-- [Demo](https://jlongyam.github.io/html-cms/display.html)
+- [Demo](https://jlongyam.github.io/html-cms/src/file.html)
 
 ## View mode
 
@@ -46,8 +46,8 @@ admin mode, it can be access by `?admin`
 
 Demo:
 
-- [mode snippet](https://jlongyam.github.io/html-cms/display.html?mode=snippet)
-- [mode website](https://jlongyam.github.io/html-cms/display.html?mode=website)
+- [mode snippet](https://jlongyam.github.io/html-cms/src/file.html?mode=snippet)
+- [mode website](https://jlongyam.github.io/html-cms/src/file.html?mode=website)
 
 ## Roadmap
 
@@ -61,3 +61,13 @@ Demo:
 - [x] Responsive
 
 [MIT](LICENSE) License
+
+## Changelog
+
+- v0.1.0
+	
+	first stable release
+
+- v0.0.2
+
+	single file `display.html`

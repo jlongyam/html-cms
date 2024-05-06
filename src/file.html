@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Display</title>
+  <title></title>
   <style id="style">
     :root {
       --font: 1.1rem/1.5 monospace;
@@ -179,7 +179,7 @@ function downloadString(text, fileType, fileName) {
   document.body.removeChild(a);
   setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
 }
-const html5_str = ( title='Title', head_str='', body_str='' )=> `<!doctype html>
+const html5_str = ( title= document.title, head_str='', body_str='' )=> `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -198,7 +198,7 @@ function update() {
   let last_script = document.scripts[document.scripts.length-1]
   last_script.innerHTML = 'content(`' + code_editor.innerHTML + '`)\n'
   code_editor.innerHTML = 'Content Updated ...'
-  str = html5_str( 'Display', document.querySelector('#style').outerHTML, document.body.innerHTML )
+  str = html5_str( document.title, document.querySelector('#style').outerHTML, document.body.innerHTML )
   let file_name = location.href.split('/').pop()
   downloadString(str,'text/html',file_name)
 }
@@ -320,13 +320,14 @@ function content(str) {
   }
   viewMode(data_mode)
   document.body.classList.remove('hide')
+  document.title = location.href.split('/').pop()
 }
 </script>
 <script>content(`&lt;!doctype html&gt;
 &lt;html lang="en"&gt;
 &lt;head&gt;
   &lt;meta charset="UTF-8"&gt;
-  &lt;title&gt;<u>Display</u>&lt;/title&gt;
+  &lt;title&gt;&lt;/title&gt;
   &lt;style&gt;
     body { <b>font: 1.1rem/1.5 Consolas, monospace;</b> }
   &lt;/style&gt;
