@@ -57,12 +57,16 @@ Demo:
 - [x] Use sessionStorage
 - [ ] Split content to tabs
 - [ ] Additional menu space
-- [x]] Minify
+- [x] Minify
 - [x] Responsive
 
 [MIT](LICENSE) License
 
 ## Changelog
+
+- v1.1.1
+
+  Add `sessionStorage` capability
 
 - v0.1.0
 	
