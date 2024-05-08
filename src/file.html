@@ -213,7 +213,10 @@ function edit() {
     button_insert.removeAttribute('disabled')
     button_mark.setAttribute('disabled','')
     button_update.setAttribute('disabled','')
-    code_proxy.value = code_editor.textContent
+    if(sessionStorage.getItem('content-current_textContent') === null ) {
+      code_proxy.value = code_editor.textContent
+    }
+    else code_proxy.value = sessionStorage.getItem('content-current_textContent')
     code_proxy.focus()
     return
   }
@@ -226,6 +229,8 @@ function edit() {
     button_update.removeAttribute('disabled')
     code_marker.value = code_proxy.value
     code_editor.textContent = code_proxy.value
+    sessionStorage.setItem('content-current_textContent', code_editor.textContent)
+    sessionStorage.setItem('content-current_innerHTML', code_editor.innerHTML)
   }
 }
 function mark() {
@@ -237,7 +242,10 @@ function mark() {
     button_update.setAttribute('disabled','')
     button_edit.setAttribute('disabled','')
     button_mark.textContent = 'Save'
-    code_marker.value = code_editor.innerHTML
+    if(sessionStorage.getItem('content-current_innerHTML') === null ) {
+      code_marker.value = code_editor.innerHTML
+    }
+    else code_marker.value = sessionStorage.getItem('content-current_innerHTML')
     code_marker.focus()
     return
   }
@@ -250,6 +258,9 @@ function mark() {
     button_edit.removeAttribute('disabled')
     button_mark.textContent = 'Mark'
     code_editor.innerHTML = code_marker.value
+    code_proxy.value = code_editor.textContent
+    sessionStorage.setItem('content-current_innerHTML', code_marker.value )
+    sessionStorage.setItem('content-current_textContent', code_editor.textContent )
   }
 }
 function preview() {
@@ -311,7 +322,10 @@ function viewMode( mode ) {
   }
 }
 function content(str) {
-  code_editor.innerHTML = str.trim()
+  if( sessionStorage.getItem('content-current_innerHTML') === null){
+    code_editor.innerHTML = str.trim()
+  }
+  else code_editor.innerHTML = sessionStorage.getItem('content-current_innerHTML')
   code_proxy.value = code_editor.textContent
   code_marker.value = code_editor.innerHTML
   let data_mode = document.querySelector('html').dataset.mode
@@ -321,6 +335,7 @@ function content(str) {
   viewMode(data_mode)
   document.body.classList.remove('hide')
   document.title = location.href.split('/').pop()
+  sessionStorage.setItem('content-default', str)
 }
 </script>
 <script>content(`&lt;!doctype html&gt;

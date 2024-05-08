@@ -54,7 +54,7 @@ Demo:
 - [x] Fix tab on desktop
 - [ ] Add marker button for mobile
 - [x] Add mode `live` and mode `snippet`
-- [ ] Use sessionStorage
+- [x] Use sessionStorage
 - [ ] Split content to tabs
 - [ ] Additional menu space
 - [x]] Minify
