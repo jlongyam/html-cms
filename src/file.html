@@ -192,7 +192,7 @@ const html5_str = ( title= document.title, head_str='', body_str='' )=> `<!docty
 </body>
 </html>`
 function insert() {
-  code_editor.textContent = code_proxy.value = html5_str( document.title, '<style></style>', '<div>TODO</div>\n\t<script><\/script>')
+  code_editor.textContent = code_proxy.value = html5_str( document.title, '<style>\n\t\n\t</style>', '<pre id="log">LOG</pre>\n\t<script>\n\t\n\t<\/script>')
 }
 function update() {
   let last_script = document.scripts[document.scripts.length-1]
