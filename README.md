@@ -36,8 +36,6 @@ Example:
 
 ```URL
 /display.html?mode=snippet
-or
-/display.html?admin=snippet
 ```
 
 If `data-set` was present in `file.html` then want to go back to
@@ -51,11 +49,12 @@ Demo:
 
 ## Roadmap
 
+- [X] Splited files
 - [x] Fix tab on desktop
 - [ ] Add marker button for mobile
 - [x] Add mode `live` and mode `snippet`
 - [x] Use sessionStorage
-- [ ] Split content to tabs
+- [ ] Tabs style
 - [ ] Additional menu space
 - [x] Minify
 - [x] Responsive
@@ -63,6 +62,10 @@ Demo:
 [MIT](LICENSE) License
 
 ## Changelog
+
+- v2.0.0
+
+	Add `split` files flavour
 
 - v1.1.1
 
