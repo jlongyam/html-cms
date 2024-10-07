@@ -83,6 +83,7 @@ function preview() {
     button_edit.setAttribute('disabled','')
     button_insert.setAttribute('disabled','')
     button_mark.setAttribute('disabled','')
+    button_update.setAttribute('disabled','')
     let ifr_doc = code_preview.contentWindow.document
     ifr_doc.open()
     ifr_doc.write(code_proxy.value)
@@ -93,6 +94,7 @@ function preview() {
     button_preview.textContent = 'Preview'
     code_preview.className = 'hide'
     button_edit.removeAttribute('disabled')
+    button_update.removeAttribute('disabled')
     if( button_edit.textContent === 'Save' ) {
       button_mark.setAttribute('disabled','')
       button_insert.removeAttribute('disabled')
