@@ -59,22 +59,6 @@ Demo:
 - [x] Minify
 - [x] Responsive
 
-[MIT](LICENSE) License
+[Changelog](CHANGELOG.md)
 
-## Changelog
-
-- v2.0.0
-
-	Add `split` files flavour
-
-- v1.1.1
-
-  Add `sessionStorage` capability
-
-- v0.1.0
-	
-	first stable release
-
-- v0.0.2
-
-	single file `display.html`
+[License](LICENSE)
